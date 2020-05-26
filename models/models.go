@@ -1,15 +1,18 @@
 package models
 
+// Ffmpeg _
 type Ffmpeg struct {
 	FfmpegBinPath  string
 	FfprobeBinPath string
 }
 
+// Metadata _
 type Metadata struct {
 	Streams []Streams `json:"streams"`
 	Format  Format    `json:"format"`
 }
 
+// Streams _
 type Streams struct {
 	Index              int
 	ID                 string      `json:"id"`
@@ -42,6 +45,7 @@ type Streams struct {
 	BitRate            string      `json:"bit_rate"`
 }
 
+// Disposition _
 type Disposition struct {
 	Default         int `json:"default"`
 	Dub             int `json:"dub"`
@@ -55,6 +59,7 @@ type Disposition struct {
 	CleanEffects    int `json:"clean_effects"`
 }
 
+// Format _
 type Format struct {
 	Filename       string
 	NbStreams      int    `json:"nb_streams"`
@@ -68,6 +73,7 @@ type Format struct {
 	Tags           Tags   `json:"tags"`
 }
 
+// Progress _
 type Progress struct {
 	FramesProcessed string
 	CurrentTime     string
@@ -76,6 +82,7 @@ type Progress struct {
 	Speed           string
 }
 
+// Tags _
 type Tags struct {
 	Encoder string `json:"ENCODER"`
 }
