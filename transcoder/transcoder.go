@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"bytes"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io"
 	"os/exec"
@@ -12,6 +11,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/pkg/errors"
 	"github.com/xfrr/goffmpeg/ffmpeg"
 	"github.com/xfrr/goffmpeg/models"
 	"github.com/xfrr/goffmpeg/utils"
@@ -148,7 +148,6 @@ func (t *Transcoder) CreateOutputPipe(containerFormat string) (*io.PipeReader, e
 // Initialize Init the transcoding process
 func (t *Transcoder) Initialize(inputPath string, outputPath string) error {
 	var err error
-	var outb, errb bytes.Buffer
 	var Metadata models.Metadata
 
 	cfg := t.configuration
@@ -164,19 +163,10 @@ func (t *Transcoder) Initialize(inputPath string, outputPath string) error {
 		return errors.New("error on transcoder.Initialize: inputPath missing")
 	}
 
-	command := []string{"-i", inputPath, "-print_format", "json", "-show_format", "-show_streams", "-show_error"}
+	Metadata, err = t.GetFileMetadata(inputPath)
 
-	cmd := exec.Command(cfg.FfprobeBin, command...)
-	cmd.Stdout = &outb
-	cmd.Stderr = &errb
-
-	err = cmd.Run()
 	if err != nil {
-		return fmt.Errorf("error executing (%s) | error: %s | message: %s %s", command, err, outb.String(), errb.String())
-	}
-
-	if err = json.Unmarshal([]byte(outb.String()), &Metadata); err != nil {
-		return err
+		return errors.Wrap(err, "Getting file metadata")
 	}
 
 	// Set new Mediafile
@@ -191,6 +181,39 @@ func (t *Transcoder) Initialize(inputPath string, outputPath string) error {
 
 	return nil
 
+}
+
+// GetFileMetadata Returns file metadata from ffprobe
+func (t *Transcoder) GetFileMetadata(filePath string) (models.Metadata, error) {
+	var Metadata models.Metadata
+	var err error
+	var outb, errb bytes.Buffer
+
+	cfg := t.configuration
+
+	if len(cfg.FfmpegBin) == 0 || len(cfg.FfprobeBin) == 0 {
+		cfg, err = ffmpeg.Configure()
+		if err != nil {
+			return models.Metadata{}, err
+		}
+	}
+
+	command := []string{"-i", filePath, "-print_format", "json", "-show_format", "-show_streams", "-show_error"}
+
+	cmd := exec.Command(cfg.FfprobeBin, command...)
+	cmd.Stdout = &outb
+	cmd.Stderr = &errb
+
+	err = cmd.Run()
+	if err != nil {
+		return models.Metadata{}, fmt.Errorf("error executing (%s %s) | error: %s | message: %s %s", cfg.FfprobeBin, command, err, outb.String(), errb.String())
+	}
+
+	if err = json.Unmarshal([]byte(outb.String()), &Metadata); err != nil {
+		return models.Metadata{}, err
+	}
+
+	return Metadata, nil
 }
 
 // Run Starts the transcoding process
