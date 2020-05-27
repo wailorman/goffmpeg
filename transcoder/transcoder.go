@@ -274,7 +274,7 @@ func (t *Transcoder) Stop() error {
 }
 
 // Output Returns the transcoding progress channel
-func (t Transcoder) Output() <-chan models.Progress {
+func (t Transcoder) Output() chan models.Progress {
 	out := make(chan models.Progress)
 
 	go func() {
