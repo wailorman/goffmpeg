@@ -1352,6 +1352,7 @@ func (m *Mediafile) ObtainStreamIds() []string {
 		}
 		return result
 	}
+
 	return nil
 }
 
@@ -1360,6 +1361,7 @@ func (m *Mediafile) ObtainCompressionLevel() []string {
 	if m.compressionLevel != 0 {
 		return []string{"-compression_level", fmt.Sprintf("%d", m.compressionLevel)}
 	}
+
 	return nil
 }
 
@@ -1368,6 +1370,7 @@ func (m *Mediafile) ObtainMapMetadata() []string {
 	if m.mapMetadata != "" {
 		return []string{"-map_metadata", m.mapMetadata}
 	}
+
 	return nil
 }
 
@@ -1381,6 +1384,7 @@ func (m *Mediafile) ObtainBframe() []string {
 	if m.bframe != 0 {
 		return []string{"-bf", fmt.Sprintf("%d", m.bframe)}
 	}
+
 	return nil
 }
 
@@ -1393,5 +1397,6 @@ func (m *Mediafile) ObtainTags() []string {
 		}
 		return result
 	}
+
 	return nil
 }
