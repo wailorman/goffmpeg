@@ -43,6 +43,8 @@ type Streams struct {
 	Duration           string      `json:"duration"`
 	Disposition        Disposition `json:"disposition"`
 	BitRate            string      `json:"bit_rate"`
+
+	DurationFloat float64
 }
 
 // Disposition _

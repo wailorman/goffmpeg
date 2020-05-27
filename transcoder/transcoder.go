@@ -185,9 +185,9 @@ func (t *Transcoder) Initialize(inputPath string, outputPath string) error {
 
 // GetFileMetadata Returns file metadata from ffprobe
 func (t *Transcoder) GetFileMetadata(filePath string) (models.Metadata, error) {
-	var Metadata models.Metadata
 	var err error
 	var outb, errb bytes.Buffer
+	metadata := &models.Metadata{}
 
 	cfg := t.configuration
 
@@ -209,11 +209,20 @@ func (t *Transcoder) GetFileMetadata(filePath string) (models.Metadata, error) {
 		return models.Metadata{}, fmt.Errorf("error executing (%s %s) | error: %s | message: %s %s", cfg.FfprobeBin, command, err, outb.String(), errb.String())
 	}
 
-	if err = json.Unmarshal([]byte(outb.String()), &Metadata); err != nil {
+	if err = json.Unmarshal([]byte(outb.String()), metadata); err != nil {
 		return models.Metadata{}, err
 	}
 
-	return Metadata, nil
+	for i := range metadata.Streams {
+		stream := &metadata.Streams[i]
+
+		stream.DurationFloat, err = strconv.ParseFloat(
+			stream.Duration,
+			64,
+		)
+	}
+
+	return *metadata, nil
 }
 
 // Run Starts the transcoding process
