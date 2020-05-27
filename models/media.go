@@ -68,6 +68,7 @@ type Mediafile struct {
 	httpKeepAlive         bool
 	hwaccel               string
 	vsync                 bool
+	inputVideoCodec       string
 	streamIds             map[int]string
 	metadata              Metadata
 	videoFilter           string
@@ -379,6 +380,11 @@ func (m *Mediafile) SetHardwareAcceleration(val string) {
 // SetVsync _
 func (m *Mediafile) SetVsync(val bool) {
 	m.vsync = val
+}
+
+// SetInputVideoCodec _
+func (m *Mediafile) SetInputVideoCodec(val string) {
+	m.inputVideoCodec = val
 }
 
 // SetInputInitialOffset _
@@ -783,6 +789,7 @@ func (m *Mediafile) ToStrCommand() []string {
 		"InputInitialOffset",
 		"HardwareAcceleration",
 		"Vsync",
+		"InputVideoCodec",
 		"InputPath",
 		"InputPipe",
 		"HideBanner",
@@ -903,6 +910,15 @@ func (m *Mediafile) ObtainHardwareAcceleration() []string {
 func (m *Mediafile) ObtainVsync() []string {
 	if m.vsync {
 		return []string{"-vsync", "0"}
+	}
+
+	return nil
+}
+
+// ObtainInputVideoCodec _
+func (m *Mediafile) ObtainInputVideoCodec() []string {
+	if m.inputVideoCodec != "" {
+		return []string{"-c:v", m.inputVideoCodec}
 	}
 
 	return nil
