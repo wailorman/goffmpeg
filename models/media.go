@@ -82,6 +82,7 @@ type Mediafile struct {
 	movflags              string
 	bframe                int
 	pixFmt                string
+	fileSizeLimit         string
 }
 
 /*** SETTERS ***/
@@ -310,6 +311,11 @@ func (m *Mediafile) SetMovFlags(val string) {
 // SetHideBanner _
 func (m *Mediafile) SetHideBanner(val bool) {
 	m.hideBanner = val
+}
+
+// SetFileSizeLimit _
+func (m *Mediafile) SetFileSizeLimit(val string) {
+	m.fileSizeLimit = val
 }
 
 // SetMuxDelay _
@@ -664,6 +670,11 @@ func (m *Mediafile) HideBanner() bool {
 	return m.hideBanner
 }
 
+// FileSizeLimit _
+func (m *Mediafile) FileSizeLimit() string {
+	return m.fileSizeLimit
+}
+
 // OutputPath _
 func (m *Mediafile) OutputPath() string {
 	return m.outputPath
@@ -793,6 +804,7 @@ func (m *Mediafile) ToStrCommand() []string {
 		"InputPath",
 		"InputPipe",
 		"HideBanner",
+		"FileSizeLimit",
 		"Aspect",
 		"Resolution",
 		"FrameRate",
@@ -964,6 +976,15 @@ func (m *Mediafile) ObtainMovFlags() []string {
 func (m *Mediafile) ObtainHideBanner() []string {
 	if m.hideBanner {
 		return []string{"-hide_banner"}
+	}
+
+	return nil
+}
+
+// ObtainFileSizeLimit _
+func (m *Mediafile) ObtainFileSizeLimit() []string {
+	if m.fileSizeLimit != "" {
+		return []string{"-fs", m.fileSizeLimit}
 	}
 
 	return nil
