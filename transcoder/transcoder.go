@@ -12,9 +12,9 @@ import (
 	"strings"
 
 	"github.com/pkg/errors"
-	"github.com/xfrr/goffmpeg/ffmpeg"
-	"github.com/xfrr/goffmpeg/models"
-	"github.com/xfrr/goffmpeg/utils"
+	"github.com/wailorman/goffmpeg/ffmpeg"
+	"github.com/wailorman/goffmpeg/models"
+	"github.com/wailorman/goffmpeg/utils"
 )
 
 // Transcoder Main struct

@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/xfrr/goffmpeg/transcoder"
+	"github.com/wailorman/goffmpeg/transcoder"
 )
 
 func main() {
