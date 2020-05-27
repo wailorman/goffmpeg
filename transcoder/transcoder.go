@@ -323,6 +323,7 @@ func (t Transcoder) Output() <-chan models.Progress {
 				var currentTime string
 				var currentBitrate string
 				var currentSpeed string
+				var fps int
 
 				for j := 0; j < len(f); j++ {
 					field := f[j]
@@ -343,8 +344,13 @@ func (t Transcoder) Output() <-chan models.Progress {
 						if fieldname == "bitrate" {
 							currentBitrate = fieldvalue
 						}
+
 						if fieldname == "speed" {
 							currentSpeed = fieldvalue
+						}
+
+						if fieldname == "fps" {
+							fps, _ = strconv.Atoi(fieldvalue)
 						}
 					}
 				}
@@ -361,6 +367,7 @@ func (t Transcoder) Output() <-chan models.Progress {
 				Progress.FramesProcessed = framesProcessed
 				Progress.CurrentTime = currentTime
 				Progress.Speed = currentSpeed
+				Progress.FPS = fps
 				out <- *Progress
 			}
 		}
