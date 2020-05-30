@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"strings"
 
+	"github.com/sirupsen/logrus"
 	"github.com/wailorman/goffmpeg/ctxlog"
 	"github.com/wailorman/goffmpeg/utils"
 )
@@ -34,12 +35,6 @@ func Configure() (Configuration, error) {
 		return Configuration{}, err
 	}
 
-	log.WithField("path", outFFmpeg.String()).
-		Debug("Found ffmpeg binary")
-
-	log.WithField("path", outFFprobe.String()).
-		Debug("Found ffprobe binary")
-
 	ffmpeg := strings.ReplaceAll(
 		outFFmpeg.String(),
 		utils.LineSeparator(),
@@ -51,6 +46,11 @@ func Configure() (Configuration, error) {
 		utils.LineSeparator(),
 		"",
 	)
+
+	log.WithFields(logrus.Fields{
+		"ffmpeg_path":  ffmpeg,
+		"ffprobe_path": ffprobe,
+	}).Debug("Found ffmpeg binaries")
 
 	cnf := Configuration{ffmpeg, ffprobe}
 	return cnf, nil

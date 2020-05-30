@@ -12,6 +12,7 @@ import (
 	"strings"
 
 	"github.com/pkg/errors"
+	"github.com/wailorman/goffmpeg/ctxlog"
 	"github.com/wailorman/goffmpeg/ffmpeg"
 	"github.com/wailorman/goffmpeg/models"
 	"github.com/wailorman/goffmpeg/utils"
@@ -185,6 +186,8 @@ func (t *Transcoder) Initialize(inputPath string, outputPath string) error {
 
 // GetFileMetadata Returns file metadata from ffprobe
 func (t *Transcoder) GetFileMetadata(filePath string) (models.Metadata, error) {
+	log := ctxlog.New(ctxlog.DefaultContext)
+
 	var err error
 	var outb, errb bytes.Buffer
 	metadata := &models.Metadata{}
@@ -199,6 +202,9 @@ func (t *Transcoder) GetFileMetadata(filePath string) (models.Metadata, error) {
 	}
 
 	command := []string{"-i", filePath, "-print_format", "json", "-show_format", "-show_streams", "-show_error"}
+
+	log.WithField("command", fmt.Sprintf("%s %s", cfg.FfprobeBin, strings.Join(command, " "))).
+		Debug("Running ffprobe")
 
 	cmd := exec.Command(cfg.FfprobeBin, command...)
 	cmd.Stdout = &outb
@@ -227,12 +233,17 @@ func (t *Transcoder) GetFileMetadata(filePath string) (models.Metadata, error) {
 
 // Run Starts the transcoding process
 func (t *Transcoder) Run(progress bool) <-chan error {
+	log := ctxlog.New(ctxlog.DefaultContext)
+
 	done := make(chan error)
 	command := t.GetCommand()
 
 	if !progress {
 		command = append([]string{"-nostats", "-loglevel", "0"}, command...)
 	}
+
+	log.WithField("command", fmt.Sprintf("%s %s", t.configuration.FfmpegBin, strings.Join(command, " "))).
+		Debug("Running ffmpeg")
 
 	proc := exec.Command(t.configuration.FfmpegBin, command...)
 	if progress {
