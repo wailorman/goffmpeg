@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"strings"
 
+	"github.com/wailorman/goffmpeg/ctxlog"
 	"github.com/wailorman/goffmpeg/utils"
 )
 
@@ -15,8 +16,10 @@ type Configuration struct {
 
 // Configure Get and set FFmpeg and FFprobe bin paths
 func Configure() (Configuration, error) {
+	log := ctxlog.New(ctxlog.DefaultContext)
+
 	var outFFmpeg bytes.Buffer
-	var outProbe bytes.Buffer
+	var outFFprobe bytes.Buffer
 
 	execFFmpegCommand := utils.GetFFmpegExec()
 	execFFprobeCommand := utils.GetFFprobeExec()
@@ -26,13 +29,30 @@ func Configure() (Configuration, error) {
 		return Configuration{}, err
 	}
 
-	outProbe, err = utils.TestCmd(execFFprobeCommand[0], execFFprobeCommand[1])
+	outFFprobe, err = utils.TestCmd(execFFprobeCommand[0], execFFprobeCommand[1])
 	if err != nil {
 		return Configuration{}, err
 	}
 
-	ffmpeg := strings.Replace(strings.Split(outFFmpeg.String(), "\n")[0], utils.LineSeparator(), "", -1)
-	ffprobe := strings.Replace(strings.Split(outProbe.String(), "\n")[0], utils.LineSeparator(), "", -1)
+	log.WithField("path", outFFmpeg.String()).
+		Debug("Found ffmpeg binary")
+
+	log.WithField("path", outFFprobe.String()).
+		Debug("Found ffprobe binary")
+
+	ffmpeg := strings.Replace(
+		strings.Split(outFFmpeg.String(), "\n")[0],
+		utils.LineSeparator(),
+		"",
+		-1,
+	)
+
+	ffprobe := strings.Replace(
+		strings.Split(outFFprobe.String(), "\n")[0],
+		utils.LineSeparator(),
+		"",
+		-1,
+	)
 
 	cnf := Configuration{ffmpeg, ffprobe}
 	return cnf, nil
