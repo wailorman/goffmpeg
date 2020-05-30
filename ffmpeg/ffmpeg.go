@@ -40,18 +40,16 @@ func Configure() (Configuration, error) {
 	log.WithField("path", outFFprobe.String()).
 		Debug("Found ffprobe binary")
 
-	ffmpeg := strings.Replace(
-		strings.Split(outFFmpeg.String(), "\n")[0],
+	ffmpeg := strings.ReplaceAll(
+		outFFmpeg.String(),
 		utils.LineSeparator(),
 		"",
-		-1,
 	)
 
-	ffprobe := strings.Replace(
-		strings.Split(outFFprobe.String(), "\n")[0],
+	ffprobe := strings.ReplaceAll(
+		outFFprobe.String(),
 		utils.LineSeparator(),
 		"",
-		-1,
 	)
 
 	cnf := Configuration{ffmpeg, ffprobe}
