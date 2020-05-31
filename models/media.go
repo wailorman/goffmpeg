@@ -83,6 +83,7 @@ type Mediafile struct {
 	bframe                int
 	pixFmt                string
 	fileSizeLimit         string
+	videoTag              string
 }
 
 /*** SETTERS ***/
@@ -433,6 +434,11 @@ func (m *Mediafile) SetTags(val map[string]string) {
 	m.tags = val
 }
 
+// SetVideoTag _
+func (m *Mediafile) SetVideoTag(val string) {
+	m.videoTag = val
+}
+
 // SetBframe _
 func (m *Mediafile) SetBframe(v int) {
 	m.bframe = v
@@ -775,6 +781,11 @@ func (m *Mediafile) Tags() map[string]string {
 	return m.tags
 }
 
+// VideoTag _
+func (m *Mediafile) VideoTag() string {
+	return m.videoTag
+}
+
 // SetEncryptionKey _
 func (m *Mediafile) SetEncryptionKey(v string) {
 	m.encryptionKey = v
@@ -852,6 +863,7 @@ func (m *Mediafile) ToStrCommand() []string {
 		"CompressionLevel",
 		"MapMetadata",
 		"Tags",
+		"VideoTag",
 		"EncryptionKey",
 		"OutputPath",
 		"Bframe",
@@ -1452,4 +1464,13 @@ func (m *Mediafile) ObtainTags() []string {
 	}
 
 	return nil
+}
+
+// ObtainVideoTag _
+func (m *Mediafile) ObtainVideoTag() []string {
+	if m.videoTag != "" {
+		return []string{"-tag:v", m.videoTag}
+	}
+
+	return []string{}
 }
