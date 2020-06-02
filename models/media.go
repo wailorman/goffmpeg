@@ -1441,7 +1441,11 @@ func (m *Mediafile) ObtainMapMetadata() []string {
 
 // ObtainEncryptionKey _
 func (m *Mediafile) ObtainEncryptionKey() []string {
-	return []string{"-hls_key_info_file", m.encryptionKey}
+	if m.encryptionKey != "" {
+		return []string{"-hls_key_info_file", m.encryptionKey}
+	}
+
+	return nil
 }
 
 // ObtainBframe _
