@@ -269,6 +269,8 @@ func (t *Transcoder) Run(progress bool) <-chan error {
 		proc.Stdout = &outb
 	}
 
+	proc.Stderr = &errb
+
 	// If an input pipe has been set, we set it as stdin for the transcoding
 	if t.mediafile.InputPipe() {
 		proc.Stdin = t.mediafile.InputPipeReader()
