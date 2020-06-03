@@ -951,10 +951,7 @@ func (m *Mediafile) ObtainInputVideoCodec() []string {
 // ObtainInputPath _
 func (m *Mediafile) ObtainInputPath() []string {
 	if m.inputPath != "" {
-		return []string{
-			"-i",
-			fmt.Sprintf("\"%s\"", m.inputPath),
-		}
+		return []string{"-i", m.inputPath}
 	}
 
 	return nil
@@ -1017,9 +1014,7 @@ func (m *Mediafile) ObtainNativeFramerateInput() []string {
 // ObtainOutputPath _
 func (m *Mediafile) ObtainOutputPath() []string {
 	if m.outputPath != "" {
-		return []string{
-			fmt.Sprintf("\"%s\"", m.outputPath),
-		}
+		return []string{m.outputPath}
 	}
 
 	return nil
