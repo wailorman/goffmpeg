@@ -353,6 +353,10 @@ func (t Transcoder) Output() chan models.Progress {
 		for scanner.Scan() {
 			Progress := new(models.Progress)
 			line := scanner.Text()
+
+			ctxlog.Logger.WithField("line", line).
+				Trace("Received line from ffmpeg output")
+
 			if strings.Contains(line, "frame=") && strings.Contains(line, "time=") && strings.Contains(line, "bitrate=") {
 				var re = regexp.MustCompile(`=\s+`)
 				st := re.ReplaceAllString(line, `=`)
