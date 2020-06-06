@@ -17,8 +17,6 @@ type Configuration struct {
 
 // Configure Get and set FFmpeg and FFprobe bin paths
 func Configure() (Configuration, error) {
-	log := ctxlog.New(ctxlog.DefaultContext)
-
 	var outFFmpeg bytes.Buffer
 	var outFFprobe bytes.Buffer
 
@@ -47,7 +45,7 @@ func Configure() (Configuration, error) {
 		"",
 	)
 
-	log.WithFields(logrus.Fields{
+	ctxlog.Logger.WithFields(logrus.Fields{
 		"ffmpeg_path":  ffmpeg,
 		"ffprobe_path": ffprobe,
 	}).Debug("Found ffmpeg binaries")
