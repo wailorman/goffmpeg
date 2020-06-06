@@ -1333,7 +1333,11 @@ func (m *Mediafile) ObtainInputInitialOffset() []string {
 
 // ObtainHlsListSize _
 func (m *Mediafile) ObtainHlsListSize() []string {
-	return []string{"-hls_list_size", fmt.Sprintf("%d", m.hlsListSize)}
+	if m.hlsListSize > 0 {
+		return []string{"-hls_list_size", fmt.Sprintf("%d", m.hlsListSize)}
+	}
+
+	return nil
 }
 
 // ObtainHlsSegmentDuration _
