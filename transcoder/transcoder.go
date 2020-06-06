@@ -201,7 +201,7 @@ func (t *Transcoder) GetFileMetadata(filePath string) (models.Metadata, error) {
 
 	command := []string{"-i", filePath, "-print_format", "json", "-show_format", "-show_streams", "-show_error"}
 
-	ctxlog.Logger.WithField("command", t.configuration.FfprobeBin+" "+joinEscapedStringSlice(command)).
+	ctxlog.Logger.WithField("command", fmt.Sprintf("%s %s", cfg.FfprobeBin, strings.Join(command, " "))).
 		Debug("Running ffprobe")
 
 	cmd := exec.Command(cfg.FfprobeBin, command...)
@@ -238,7 +238,7 @@ func (t *Transcoder) Run(progress bool) <-chan error {
 		command = append([]string{"-nostats", "-loglevel", "0"}, command...)
 	}
 
-	ctxlog.Logger.WithField("command", t.configuration.FfmpegBin+" "+joinEscapedStringSlice(command)).
+	ctxlog.Logger.WithField("command", fmt.Sprintf("%s %s", t.configuration.FfmpegBin, strings.Join(command, " "))).
 		Debug("Running ffmpeg")
 
 	proc := exec.Command(t.configuration.FfmpegBin, command...)
@@ -298,16 +298,6 @@ func (t *Transcoder) Run(progress bool) <-chan error {
 	}(err)
 
 	return done
-}
-
-func joinEscapedStringSlice(strs []string) string {
-	var result string
-
-	for _, str := range strs {
-		result = result + " " + fmt.Sprintf("%#v", str)
-	}
-
-	return result
 }
 
 // Stop Ends the transcoding process
