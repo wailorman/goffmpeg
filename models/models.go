@@ -82,7 +82,7 @@ type Progress struct {
 	CurrentBitrate  string
 	Progress        float64
 	Speed           string
-	FPS             int
+	FPS             float64
 }
 
 // Tags _

@@ -366,7 +366,7 @@ func (t Transcoder) Output() chan models.Progress {
 				var currentTime string
 				var currentBitrate string
 				var currentSpeed string
-				var fps int
+				var fps float64
 
 				for j := 0; j < len(f); j++ {
 					field := f[j]
@@ -393,7 +393,7 @@ func (t Transcoder) Output() chan models.Progress {
 						}
 
 						if fieldname == "fps" {
-							fps, _ = strconv.Atoi(fieldvalue)
+							fps, _ = strconv.ParseFloat(fieldvalue, 64)
 						}
 					}
 				}
