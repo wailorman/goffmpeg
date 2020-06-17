@@ -88,6 +88,12 @@ type Mediafile struct {
 	nvencRateControl     string
 	constantQuantization int
 	nvencTargetQuality   int
+	libx265Params        *Libx265Params
+}
+
+// Libx265Params _
+type Libx265Params struct {
+	CRF uint32
 }
 
 /*** SETTERS ***/
@@ -271,6 +277,11 @@ func (m *Mediafile) SetNvencTargetQuality(v int) {
 // SetCRF _
 func (m *Mediafile) SetCRF(v uint32) {
 	m.crf = v
+}
+
+// SetLibx265Params _
+func (m *Mediafile) SetLibx265Params(v *Libx265Params) {
+	m.libx265Params = v
 }
 
 // SetStrict _
@@ -645,6 +656,11 @@ func (m *Mediafile) CRF() uint32 {
 	return m.crf
 }
 
+// Libx265Params _
+func (m *Mediafile) Libx265Params() *Libx265Params {
+	return m.libx265Params
+}
+
 // Strict _
 func (m *Mediafile) Strict() int {
 	return m.strict
@@ -868,6 +884,7 @@ func (m *Mediafile) ToStrCommand() []string {
 		"AudioProfile",
 		"SkipAudio",
 		"CRF",
+		"Libx265Params",
 		"QScale",
 		"NvencRateControl",
 		"ConstantQuantization",
@@ -1264,6 +1281,25 @@ func (m *Mediafile) ObtainTune() []string {
 func (m *Mediafile) ObtainCRF() []string {
 	if m.crf != 0 {
 		return []string{"-crf", fmt.Sprintf("%d", m.crf)}
+	}
+
+	return nil
+}
+
+// ObtainLibx265Params _
+func (m *Mediafile) ObtainLibx265Params() []string {
+	if m.libx265Params != nil {
+		flags := make([]string, 0)
+
+		if m.libx265Params.CRF > 0 {
+			flags = append(flags, fmt.Sprintf("crf=%d", m.libx265Params.CRF))
+		}
+
+		if len(flags) > 0 {
+			flags = append([]string{"-x265-params"}, flags...)
+		}
+
+		return flags
 	}
 
 	return nil
