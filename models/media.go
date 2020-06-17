@@ -84,6 +84,10 @@ type Mediafile struct {
 	pixFmt                string
 	fileSizeLimit         string
 	videoTag              string
+	// https://superuser.com/a/1296511
+	nvencRateControl          string
+	nvencConstantQuantization int
+	nvencTargetQuality        int
 }
 
 /*** SETTERS ***/
@@ -247,6 +251,21 @@ func (m *Mediafile) SetSeekTimeInput(v string) {
 // SetQScale Q Scale must be integer between 1 to 31 - HTTPs://trac.ffmpeg.org/wiki/Encode/MPEG-4
 func (m *Mediafile) SetQScale(v uint32) {
 	m.qscale = v
+}
+
+// SetNvencRateControl _
+func (m *Mediafile) SetNvencRateControl(v string) {
+	m.nvencRateControl = v
+}
+
+// SetNvencConstantQuantization _
+func (m *Mediafile) SetNvencConstantQuantization(v int) {
+	m.nvencConstantQuantization = v
+}
+
+// SetNvencTargetQuality _
+func (m *Mediafile) SetNvencTargetQuality(v int) {
+	m.nvencTargetQuality = v
 }
 
 // SetCRF _
@@ -606,6 +625,21 @@ func (m *Mediafile) QScale() uint32 {
 	return m.qscale
 }
 
+// NvencRateControl _
+func (m *Mediafile) NvencRateControl() string {
+	return m.nvencRateControl
+}
+
+// NvencConstantQuantization _
+func (m *Mediafile) NvencConstantQuantization() int {
+	return m.nvencConstantQuantization
+}
+
+// NvencTargetQuality _
+func (m *Mediafile) NvencTargetQuality() int {
+	return m.nvencTargetQuality
+}
+
 // CRF _
 func (m *Mediafile) CRF() uint32 {
 	return m.crf
@@ -835,6 +869,9 @@ func (m *Mediafile) ToStrCommand() []string {
 		"SkipAudio",
 		"CRF",
 		"QScale",
+		"NvencRateControl",
+		"NvencConstantQuantization",
+		"NvencTargetQuality",
 		"Strict",
 		"BufferSize",
 		"MuxDelay",
@@ -1236,6 +1273,33 @@ func (m *Mediafile) ObtainCRF() []string {
 func (m *Mediafile) ObtainQScale() []string {
 	if m.qscale != 0 {
 		return []string{"-qscale", fmt.Sprintf("%d", m.qscale)}
+	}
+
+	return nil
+}
+
+// ObtainNvencRateControl _
+func (m *Mediafile) ObtainNvencRateControl() []string {
+	if m.nvencRateControl != "" {
+		return []string{"-rc", m.nvencRateControl}
+	}
+
+	return nil
+}
+
+// ObtainNvencConstantQuantization _
+func (m *Mediafile) ObtainNvencConstantQuantization() []string {
+	if m.nvencConstantQuantization > 0 {
+		return []string{"-qp", fmt.Sprintf("%d", m.nvencConstantQuantization)}
+	}
+
+	return nil
+}
+
+// ObtainNvencTargetQuality _
+func (m *Mediafile) ObtainNvencTargetQuality() []string {
+	if m.nvencTargetQuality > 0 {
+		return []string{"-cq", fmt.Sprintf("%d", m.nvencTargetQuality)}
 	}
 
 	return nil
