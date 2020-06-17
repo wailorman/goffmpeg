@@ -85,9 +85,9 @@ type Mediafile struct {
 	fileSizeLimit         string
 	videoTag              string
 	// https://superuser.com/a/1296511
-	nvencRateControl          string
-	nvencConstantQuantization int
-	nvencTargetQuality        int
+	nvencRateControl     string
+	constantQuantization int
+	nvencTargetQuality   int
 }
 
 /*** SETTERS ***/
@@ -258,9 +258,9 @@ func (m *Mediafile) SetNvencRateControl(v string) {
 	m.nvencRateControl = v
 }
 
-// SetNvencConstantQuantization _
-func (m *Mediafile) SetNvencConstantQuantization(v int) {
-	m.nvencConstantQuantization = v
+// SetConstantQuantization _
+func (m *Mediafile) SetConstantQuantization(v int) {
+	m.constantQuantization = v
 }
 
 // SetNvencTargetQuality _
@@ -630,9 +630,9 @@ func (m *Mediafile) NvencRateControl() string {
 	return m.nvencRateControl
 }
 
-// NvencConstantQuantization _
-func (m *Mediafile) NvencConstantQuantization() int {
-	return m.nvencConstantQuantization
+// ConstantQuantization _
+func (m *Mediafile) ConstantQuantization() int {
+	return m.constantQuantization
 }
 
 // NvencTargetQuality _
@@ -870,7 +870,7 @@ func (m *Mediafile) ToStrCommand() []string {
 		"CRF",
 		"QScale",
 		"NvencRateControl",
-		"NvencConstantQuantization",
+		"ConstantQuantization",
 		"NvencTargetQuality",
 		"Strict",
 		"BufferSize",
@@ -1287,10 +1287,10 @@ func (m *Mediafile) ObtainNvencRateControl() []string {
 	return nil
 }
 
-// ObtainNvencConstantQuantization _
-func (m *Mediafile) ObtainNvencConstantQuantization() []string {
-	if m.nvencConstantQuantization > 0 {
-		return []string{"-qp", fmt.Sprintf("%d", m.nvencConstantQuantization)}
+// ObtainConstantQuantization _
+func (m *Mediafile) ObtainConstantQuantization() []string {
+	if m.constantQuantization > 0 {
+		return []string{"-qp", fmt.Sprintf("%d", m.constantQuantization)}
 	}
 
 	return nil
