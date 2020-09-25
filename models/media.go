@@ -85,7 +85,9 @@ type Mediafile struct {
 	fileSizeLimit         string
 	videoTag              string
 	// https://superuser.com/a/1296511
-	nvencRateControl     string
+	nvencRateControl string
+	// https://stackoverflow.com/questions/49686244/ffmpeg-too-many-packets-buffered-for-output-stream-01
+	maxMuxingQueueSize   int
 	constantQuantization int
 	nvencTargetQuality   int
 	libx265Params        *Libx265Params
@@ -262,6 +264,11 @@ func (m *Mediafile) SetQScale(v uint32) {
 // SetNvencRateControl _
 func (m *Mediafile) SetNvencRateControl(v string) {
 	m.nvencRateControl = v
+}
+
+// SetMaxMuxingQueueSize _
+func (m *Mediafile) SetMaxMuxingQueueSize(v int) {
+	m.maxMuxingQueueSize = v
 }
 
 // SetConstantQuantization _
@@ -641,6 +648,11 @@ func (m *Mediafile) NvencRateControl() string {
 	return m.nvencRateControl
 }
 
+// MaxMuxingQueueSize _
+func (m *Mediafile) MaxMuxingQueueSize() int {
+	return m.maxMuxingQueueSize
+}
+
 // ConstantQuantization _
 func (m *Mediafile) ConstantQuantization() int {
 	return m.constantQuantization
@@ -887,6 +899,7 @@ func (m *Mediafile) ToStrCommand() []string {
 		"Libx265Params",
 		"QScale",
 		"NvencRateControl",
+		"MaxMuxingQueueSize",
 		"ConstantQuantization",
 		"NvencTargetQuality",
 		"Strict",
@@ -1318,6 +1331,15 @@ func (m *Mediafile) ObtainQScale() []string {
 func (m *Mediafile) ObtainNvencRateControl() []string {
 	if m.nvencRateControl != "" {
 		return []string{"-rc", m.nvencRateControl}
+	}
+
+	return nil
+}
+
+// ObtainMaxMuxingQueueSize _
+func (m *Mediafile) ObtainMaxMuxingQueueSize() []string {
+	if m.maxMuxingQueueSize != 0 {
+		return []string{"-max_muxing_queue_size", fmt.Sprintf("%d", m.maxMuxingQueueSize)}
 	}
 
 	return nil
